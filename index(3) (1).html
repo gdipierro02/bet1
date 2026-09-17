@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cattolica Bet — Demo</title>
+<style>
+:root{--bg:#071b35;--panel:#0d2a50;--card:#123b6d;--line:#2c5d8f;--text:#f7fbff;--muted:#b9cce0;--accent:#d71920;--danger:#ffd166}*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#06172e,#0b315c);color:var(--text)}header{padding:22px 5%;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);position:sticky;top:0;background:#071b35ee;backdrop-filter:blur(10px);z-index:2}.brand{font-size:24px;font-weight:800}.brand span{color:var(--accent)}.tag{font-size:12px;color:var(--muted)}main{max-width:1100px;margin:auto;padding:34px 20px}.hero{display:grid;grid-template-columns:1.5fr 1fr;gap:22px;align-items:stretch;margin-bottom:28px}.hero>div,.slip{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:24px}h1{font-size:42px;margin:0 0 10px}.hero p{color:var(--muted);line-height:1.5}.badge{display:inline-block;padding:7px 10px;border-radius:999px;background:#f7fbff;color:#0d2a50;font-size:12px;font-weight:700}.matches{display:grid;gap:14px}.match{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px}.meta{color:var(--muted);font-size:13px;margin-bottom:8px}.teams{font-size:19px;font-weight:700;margin-bottom:14px}.odds{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.odd{border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:12px;padding:12px;cursor:pointer;font-size:15px}.odd:hover,.odd.selected{border-color:var(--accent);background:#174b80}.odd strong{display:block;color:var(--accent);font-size:18px;margin-top:4px}.slip{position:sticky;top:100px}.slip h2{margin-top:0}.selection{padding:12px 0;border-bottom:1px solid var(--line);font-size:14px}.empty{color:var(--muted)}label{display:block;color:var(--muted);font-size:13px;margin:18px 0 6px}input{width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:#071b35;color:white;font-size:16px}.total{display:flex;justify-content:space-between;margin-top:16px;font-size:16px}.win{font-size:22px;color:var(--accent);font-weight:800}.place{width:100%;margin-top:18px;padding:14px;border:0;border-radius:12px;background:var(--accent);font-weight:800;cursor:pointer}.notice{margin-top:12px;color:var(--danger);font-size:12px;line-height:1.4}.source{margin-top:26px;padding:16px;border:1px dashed var(--line);border-radius:14px;color:var(--muted);font-size:13px;line-height:1.5}@media(max-width:800px){.hero{grid-template-columns:1fr}.slip{position:static}h1{font-size:34px}.odds{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><div><div class="brand">CATTOLICA <span>BET</span></div><div class="tag">Progetto studentesco non ufficiale • demo educativa</div></div><div class="badge">18+ • Gioco responsabile</div></header>
+<main>
+<section class="hero">
+<div><span class="badge">CATTOLICA BET</span><h1>La schedina in stile campus.</h1><p>Concept front-end ispirato alla palette blu, bianco e rosso usata nella comunicazione di Cattolica. Prototipo per imparare HTML, CSS e JavaScript. Le selezioni vengono aggiunte a una schedina simulata e la quota totale viene calcolata automaticamente.</p></div>
+<div><h3>Come funziona</h3><p>1. Scegli un esito.<br>2. Inserisci una puntata simulata.<br>3. Il sito calcola quota totale e vincita potenziale.</p><p class="notice">Cattolica Bet è un progetto indipendente e non è affiliato, approvato o gestito dall’Università Cattolica del Sacro Cuore. Il pulsante finale non effettua pagamenti né trasmette giocate a bookmaker.</p></div>
+</section>
+<div class="hero">
+<section><h2>Partite in evidenza</h2><div class="matches" id="matches"></div></section>
+<aside class="slip"><h2>La tua schedina</h2><div id="selections" class="empty">Nessuna selezione</div><label for="stake">Puntata simulata (€)</label><input id="stake" type="number" min="0" step="1" value="10"><div class="total"><span>Quota totale</span><strong id="totalOdds">1.00</strong></div><div class="total"><span>Vincita potenziale</span><span class="win" id="potential">€10.00</span></div><button class="place" id="place">SIMULA GIOCATA</button><div class="notice" id="message">Demo: nessun denaro reale viene utilizzato.</div></aside>
+</div>
+<div class="source"><strong>Nota sulle quote:</strong> i valori mostrati qui sono un'istantanea dimostrativa inserita manualmente, non un feed live. Le quote sportive cambiano frequentemente: prima di usarle come dato reale devono essere recuperate tramite un'API autorizzata/licenziata e aggiornate dal server.</div>
+</main>
+<script>
+const games=[
+ {id:'juv-nec',league:'Europa League • 17/09/2026 21:00',teams:'Juventus – NEC Nijmegen',odds:{'1':1.19,'X':7.25,'2':12.00}},
+ {id:'soc-bou',league:'Europa League • 17/09/2026',teams:'Real Sociedad – Bournemouth',odds:{'1':2.90,'X':3.55,'2':2.30}}
+];
+const selected=new Map();
+const matches=document.querySelector('#matches'), selections=document.querySelector('#selections'), stake=document.querySelector('#stake');
+function renderGames(){matches.innerHTML='';games.forEach(g=>{const el=document.createElement('article');el.className='match';el.innerHTML=`<div class="meta">${g.league}</div><div class="teams">${g.teams}</div><div class="odds"></div>`;const box=el.querySelector('.odds');Object.entries(g.odds).forEach(([pick,odd])=>{const b=document.createElement('button');b.className='odd';b.innerHTML=`${pick}<strong>${odd.toFixed(2)}</strong>`;b.addEventListener('click',()=>{const key=g.id;if(selected.get(key)?.pick===pick)selected.delete(key);else selected.set(key,{teams:g.teams,pick,odd});renderGames();renderSlip();});if(selected.get(g.id)?.pick===pick)b.classList.add('selected');box.appendChild(b)});matches.appendChild(el)})}
+function renderSlip(){if(!selected.size)selections.innerHTML='<span class="empty">Nessuna selezione</span>';else selections.innerHTML=[...selected.values()].map(s=>`<div class="selection"><strong>${s.teams}</strong><br>Esito ${s.pick} @ ${s.odd.toFixed(2)}</div>`).join('');let total=[...selected.values()].reduce((a,s)=>a*s.odd,1);document.querySelector('#totalOdds').textContent=total.toFixed(2);let amount=Math.max(0,Number(stake.value)||0);document.querySelector('#potential').textContent='€'+(amount*total).toFixed(2)}
+stake.addEventListener('input',renderSlip);document.querySelector('#place').addEventListener('click',()=>{document.querySelector('#message').textContent=selected.size?'Simulazione completata. Questa demo non invia alcuna giocata reale.':'Scegli almeno un esito per simulare la schedina.'});renderGames();renderSlip();
+</script>
+</body></html>
